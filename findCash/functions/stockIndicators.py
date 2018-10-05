@@ -31,28 +31,30 @@ class Indicators:
             check = 0
         else:
             dataSize = len(closePriceArray) - 1
-        currRange = abs(closePriceArray[dataSize] - openPriceArray[dataSize])
-        currHigh = closePriceArray[dataSize]
-        currLow = openPriceArray[dataSize]
-        prevRange = abs(closePriceArray[dataSize - window] - openPriceArray[dataSize - window])
-        prevHigh = closePriceArray[dataSize - window]
-        prevLow = openPriceArray[dataSize - window]
+        currHigh = max(closePriceArray[(dataSize - window):dataSize])
+        currLow = min(openPriceArray[(dataSize - window):dataSize])
+        currRange = abs(currHigh - currLow)
+        prevHigh = max(closePriceArray[(dataSize - 2*window):(dataSize - window)])
+        prevLow = min(openPriceArray[(dataSize - 2*window):(dataSize - window)])
+        prevRange = abs(prevHigh - prevLow)
         if currRange < prevRange and currHigh < prevHigh and currLow > prevLow and currHigh > currLow and prevHigh > prevLow:
             check = 1
         else:
             check = 0
         return check
     
-    def insideTightCheck(self, openPriceArray, closePriceArray, window):
+    def insideTightCheck(self, openPriceArray, closePriceArray, window, percentage):
+        #Checks how much variation in stock over given window
         if len(openPriceArray) < window and len(closePriceArray) < window:
             #raise ValueError("data is too short")
             check = 0
         else:
-            dataSize = len(closePriceArray) - 1
-        currRange = abs(closePriceArray[dataSize] - openPriceArray[dataSize])
-        currHigh = closePriceArray[dataSize]
+            dataSize = len(closePriceArray) - 1      
+        currHigh = max(closePriceArray[(dataSize - window):dataSize])
+        currLow = min(openPriceArray[(dataSize - window):dataSize])
+        currRange = abs(currHigh - currLow)
         meas = currRange/currHigh
-        if meas <= 0.02:
+        if meas <= percentage/100:
             check = 1
         else:
             check = 0

@@ -19,3 +19,8 @@ class getJson:
         data = json.loads(content)
         time.sleep(0.1)
         return data
+    def parseJson(self,array,label):
+        data = []
+        for x in range(0,len(array)):
+            data.append(array[x][label])
+        return data

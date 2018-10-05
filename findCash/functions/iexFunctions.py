@@ -21,6 +21,7 @@ class iexScan:
         data = fetchData.fetchIt(url)
         obj.append(data['open'])
         obj.append(data['close'])   
+        obj.append(data['avgTotalVolume'])
         #get precalculated ema's
         url = self.base + "/stock/" + "%s"%(ticker) + "/stats"
         data = fetchData.fetchIt(url)
@@ -31,8 +32,19 @@ class iexScan:
         obj = []
         url = self.base + "/stock/" + "%s"%(ticker) + "/chart/2y"
         data = fetchData.fetchIt(url)
-        for x in range(0,len(data)):
-            obj.append(data[x][dailyParam])
+        attempts = 10
+        length = len(data)
+        while attempts:
+            try:
+                for x in range(0,length):
+                    obj.append(data[x][dailyParam])
+                break
+            except KeyError:
+                print("Error fetching; retrying in 5 SECS")
+                time.sleep(5)
+                attempts = attempts - 1
+                data = fetchData.fetchIt(url)
+                length -= 1            
         return obj
     
         
