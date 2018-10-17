@@ -13,6 +13,7 @@ class Indicators:
         else:
             current_sma = sum(data[-window:]) / float(window)
         return current_sma
+       
     
     def ema(self, data, window):
         if len(data) < 2 * window:
@@ -25,17 +26,17 @@ class Indicators:
                 current_ema = (c * value) + ((1 - c) * current_ema)
         return current_ema
     
-    def insideCheck(self,openPriceArray, closePriceArray, window):
-        if len(openPriceArray) < window and len(closePriceArray) < window:
+    def insideCheck(self,lowPriceArray, highPriceArray, window):
+        if len(lowPriceArray) < window and len(highPriceArray) < window:
             #raise ValueError("data is too short")
             check = 0
         else:
-            dataSize = len(closePriceArray) - 1
-        currHigh = max(closePriceArray[(dataSize - window):dataSize])
-        currLow = min(openPriceArray[(dataSize - window):dataSize])
+            dataSize = len(highPriceArray) - 1
+        currHigh = max(highPriceArray[(dataSize - window):dataSize])
+        currLow = min(lowPriceArray[(dataSize - window):dataSize])
         currRange = abs(currHigh - currLow)
-        prevHigh = max(closePriceArray[(dataSize - 2*window):(dataSize - window)])
-        prevLow = min(openPriceArray[(dataSize - 2*window):(dataSize - window)])
+        prevHigh = max(highPriceArray[(dataSize - 2*window):(dataSize - window)])
+        prevLow = min(lowPriceArray[(dataSize - 2*window):(dataSize - window)])
         prevRange = abs(prevHigh - prevLow)
         if currRange < prevRange and currHigh < prevHigh and currLow > prevLow and currHigh > currLow and prevHigh > prevLow:
             check = 1
@@ -43,15 +44,15 @@ class Indicators:
             check = 0
         return check
     
-    def insideTightCheck(self, openPriceArray, closePriceArray, window, percentage):
+    def insideTightCheck(self, lowPriceArray, highPriceArray, window, percentage):
         #Checks how much variation in stock over given window
-        if len(openPriceArray) < window and len(closePriceArray) < window:
+        if len(lowPriceArray) < window and len(highPriceArray) < window:
             #raise ValueError("data is too short")
             check = 0
         else:
-            dataSize = len(closePriceArray) - 1      
-        currHigh = max(closePriceArray[(dataSize - window):dataSize])
-        currLow = min(openPriceArray[(dataSize - window):dataSize])
+            dataSize = len(highPriceArray) - 1      
+        currHigh = max(highPriceArray[(dataSize - window):dataSize])
+        currLow = min(lowPriceArray[(dataSize - window):dataSize])
         currRange = abs(currHigh - currLow)
         meas = currRange/currHigh
         if meas <= percentage/100:
