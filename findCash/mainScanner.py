@@ -21,12 +21,14 @@ import stockIndicators
 import botFunctions
 import urllib
 import string
+import time
 
 stockData = iexFunctions.iexScan()
 fetchData = getData.getJson()
 ind = stockIndicators.Indicators()
 bot = botFunctions.groupMeBot()
 
+startTime = time.time()
 #For Quick SNP 500 search, make isQuick true
 #False for entire NYSE and Nasdaq
 isQuick = False
@@ -158,11 +160,11 @@ else:
     messageImportant = 'NASDAQ AND NYSE WATCHLIST\n'
 messageImportant = messageImportant +' '.join(highTier).lower() + '\n'
 #BotPost
-bot.botPost('Selective shit; gotta be picky if you do not want to lose money\n')
+bot.botPost('Selective: gotta be picky if you do not want to lose money\n')
 bot.botPost(messageImportant)
 
 #Miscellaneous shit; go here if you run out of ideas lol
-message = 'now for some miscellaneous shit \n'
+message = 'now for some miscellaneous \n'
 message = message + 'INSIDE WEEK: ' + ' '.join(inWeek).lower() + '\n'
 message = message + 'TIGHT WEEK: ' + ' '.join(tightWeek).lower() + '\n'
 message = message + 'INSIDE DAY: ' + ' '.join(inDay).lower() + '\n'
@@ -174,6 +176,12 @@ n = 450
 message = [message[i:i + n] for i in range(0, len(message), n)]
 #BotPost
 for i in range(0, len(message)): bot.botPost(message[i])
+
+#testTime print
+timeElapsed = time.time() - startTime
+message = 'Time elapsed: ' + str(timeElapsed) + '\n'
+print(message)
+bot.botPost(message)
 
 
     
