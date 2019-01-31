@@ -21,7 +21,9 @@ import stockIndicators
 import botFunctions
 import urllib
 import string
+import ssl
 
+ssl._create_default_https_context = ssl._create_unverified_context
 stockData = iexFunctions.iexScan()
 fetchData = getData.getJson()
 ind = stockIndicators.Indicators()
@@ -77,7 +79,7 @@ while attempts:
                 if any(y is None for y in data):
                     statusString = statusString + ' cannot retrieve data'
                     print(statusString)
-                elif currentPrice < 20:
+                elif currentPrice < 12: #NOW CONSIDERING 12 DOLLA STOCKS
                     statusString = statusString + ' better luck next time'
                     print(statusString)
                 elif avgVol < 500000:
@@ -163,11 +165,11 @@ bot.botPost(messageImportant)
 
 #Miscellaneous shit; go here if you run out of ideas lol
 message = 'now for some miscellaneous shit \n'
-message = message + 'INSIDE WEEK: ' + ' '.join(inWeek).lower() + '\n'
-message = message + 'TIGHT WEEK: ' + ' '.join(tightWeek).lower() + '\n'
-message = message + 'INSIDE DAY: ' + ' '.join(inDay).lower() + '\n'
-message = message + 'BUY ME: ' + ' '.join(buyMe).lower() + '\n'
-message = message + 'MISCELLANEOUS WATCH LIST: ' + ' '.join(watchMe).lower() + '\n'
+message = message + 'INSIDE WEEK: ' + ','.join(inWeek).lower() + '\n'
+message = message + 'TIGHT WEEK: ' + ','.join(tightWeek).lower() + '\n'
+message = message + 'INSIDE DAY: ' + ','.join(inDay).lower() + '\n'
+message = message + 'BUY ME: ' + ','.join(buyMe).lower() + '\n'
+message = message + 'MISCELLANEOUS WATCH LIST: ' + ','.join(watchMe).lower() + '\n'
 
 #Split string every 450 chars
 n = 450
