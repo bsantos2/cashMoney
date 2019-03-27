@@ -31,7 +31,7 @@ bot = botFunctions.groupMeBot()
 
 #For Quick SNP 500 search, make isQuick true
 #False for entire NYSE and Nasdaq
-isQuick = False
+isQuick = True
 
 #Array of stocks
 url = "https://pkgstore.datahub.io/core/s-and-p-500-companies/constituents_json/data/64dd3e9582b936b0352fdd826ecd3c95/constituents_json.json"
@@ -70,29 +70,24 @@ while attempts:
                 statusString = statusString + ' Invalid char in ticker'
                 print(statusString)
             else:
-                data = stockData.getKeyStats(stock[x])
-                openPrice = data[0]
-                currentPrice = data[1] #also the close price
-                avgVol = data[2]
-                low52 = data[3]
-                high52 = data[4]
-                if any(y is None for y in data):
+                stockData.getKeyStats(stock[x])
+                if stockData.status == 'error':
                     statusString = statusString + ' cannot retrieve data'
                     print(statusString)
-                elif currentPrice < 12: #NOW CONSIDERING 12 DOLLA STOCKS
+                elif stockData.currentPrice < 12: #NOW CONSIDERING 12 DOLLA STOCKS
                     statusString = statusString + ' better luck next time'
                     print(statusString)
-                elif avgVol < 500000:
+                elif stockData.avgVol < 500000:
                     statusString = statusString + ' better luck next time'
                     print(statusString)
-                elif currentPrice >= 20:
+                elif stockData.currentPrice >= 20:
                     dailyData = stockData.getDaily(stock[x], 'close')
                     ema50 = ind.ema(dailyData,50) 
                     ema150 =ind.ema(dailyData,150)#cant calc
                     ema200 = ind.ema(dailyData,200)#cant calc
                     condition = 0
                     statusString = stock[x]
-                    if (currentPrice > ema200) and (currentPrice > 0.35*high52) and (currentPrice >= low52) and (currentPrice <= low52*3) and (currentPrice >= 0.25*high52) and (ema50 > ema200) and (currentPrice > ema50) and (ema50 > ema150) and (ema150 > ema200) and (currentPrice > ema150):
+                    if (stockData.currentPrice > ema200) and (stockData.currentPrice > 0.35*stockData.high52) and (stockData.currentPrice >= stockData.low52) and (stockData.currentPrice <= stockData.low52*3) and (stockData.currentPrice >= 0.25*stockData.high52) and (ema50 > ema200) and (stockData.currentPrice > ema50) and (ema50 > ema150) and (ema150 > ema200) and (stockData.currentPrice > ema150):
                         #Do thorough checks
                         #Add to Watchlist
                         watchMe.append(stock[x])
@@ -113,7 +108,7 @@ while attempts:
                         if insideDay == 1:
                             inDay.append(stock[x])
                             statusString = statusString + ' inside day;'
-                        if sma8 > sma14 and sma8 > openPrice:
+                        if sma8 > sma14 and sma8 > stockData.openPrice:
                             buyMe.append(stock[x])
                             statusString = statusString + ' A BUY!!!'
                         if ind.insideTightCheck(lowPriceArr,highPriceArr,1,1) ==  1:
